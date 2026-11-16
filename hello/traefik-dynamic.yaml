@@ -1,0 +1,13 @@
+http:
+  routers:
+    hello:
+      rule: Host(`secaware.localhost`)
+      entryPoints: [websecure]
+      service: hello
+      tls: {}
+
+  services:
+    hello:
+      loadBalancer:
+        servers:
+          - url: http://hello:8080

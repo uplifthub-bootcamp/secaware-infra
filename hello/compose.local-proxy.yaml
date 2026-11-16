@@ -1,0 +1,20 @@
+name: hello-demo
+
+services:
+  hello:
+    build: .
+
+  traefik:
+    image: traefik:v3.7.17
+    user: "65534:65534"
+    command:
+      - --entrypoints.web.address=:8000
+      - --entrypoints.websecure.address=:8443
+      - --entrypoints.web.http.redirections.entrypoint.to=:${DEMO_HTTPS_PORT:-19011}
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --providers.file.filename=/etc/traefik/dynamic.yaml
+    volumes:
+      - ./traefik-dynamic.yaml:/etc/traefik/dynamic.yaml:ro
+    ports:
+      - "127.0.0.1:${DEMO_HTTP_PORT:-19010}:8000"
+      - "127.0.0.1:${DEMO_HTTPS_PORT:-19011}:8443"
